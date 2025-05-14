@@ -1,0 +1,220 @@
+; UART COMMUNICATION MODULE
+
+; Konfigurasi UART
+UART_Init:
+    LDI R16, 103
+    STS UBRR0L, R16
+    CLR R16
+    STS UBRR0H, R16
+    
+    LDI R16, (1<<TXEN0)
+    STS UCSR0B, R16
+    
+    LDI R16, (1<<UCSZ01) | (1<<UCSZ00)
+    STS UCSR0C, R16
+    
+    RET
+
+Send_Welcome_Message:
+    LDI ZL, lo8(welcome_msg)
+    LDI ZH, hi8(welcome_msg)
+    
+send_msg_loop:
+    LPM R16, Z+
+    CPI R16, 0
+    BREQ send_msg_done
+    
+    RCALL Send_Char
+    RJMP send_msg_loop
+    
+send_msg_done:
+    RET
+
+; Update Terminal
+Process_Data:
+    CPI R20, 1
+    BRNE Process_Data_Exit
+    
+    MOV R19, R18
+    
+    RCALL Update_Terminal_Display
+    
+Process_Data_Exit:
+    RET
+
+; Update data water level
+Update_Terminal_Display:
+    LDI ZL, lo8(water_level_msg)
+    LDI ZH, hi8(water_level_msg)
+    
+process_msg_loop:
+    LPM R16, Z+
+    CPI R16, 0
+    BREQ send_water_level
+    
+    RCALL Send_Char
+    RJMP process_msg_loop
+    
+send_water_level:
+    MOV R16, R19
+    RCALL Send_Decimal_Value
+    
+    RCALL Send_Status_Message
+    
+    LDI R16, 13
+    RCALL Send_Char
+    LDI R16, 10
+    RCALL Send_Char
+    
+    RET
+
+; Menampilkan indikator water level
+Send_Status_Message:
+    CPI R19, 33
+    BRSH check_medium
+    
+    LDI ZL, lo8(low_level_msg)
+    LDI ZH, hi8(low_level_msg)
+    RCALL Send_Status_String
+    RJMP status_done
+    
+check_medium:
+    CPI R19, 66
+    BRSH high_level
+    
+    LDI ZL, lo8(medium_level_msg)
+    LDI ZH, hi8(medium_level_msg)
+    RCALL Send_Status_String
+    RJMP status_done
+    
+high_level:
+    LDI ZL, lo8(high_level_msg)
+    LDI ZH, hi8(high_level_msg)
+    RCALL Send_Status_String
+    
+status_done:
+    RET
+
+Send_Status_String:
+status_string_loop:
+    LPM R16, Z+
+    CPI R16, 0
+    BREQ status_string_done
+    
+    RCALL Send_Char
+    RJMP status_string_loop
+    
+status_string_done:
+    RET
+
+Send_Char:
+uart_tx_wait:
+    LDS R17, UCSR0A
+    SBRS R17, UDRE0
+    RJMP uart_tx_wait
+    
+    STS UDR0, R16
+    
+    RET
+
+; Konversi nilai dari dec menjadi skala persentase
+Send_Decimal_Value:
+    PUSH R16
+    
+    CPI R16, 255
+    BRNE normal_percentage_calculation_uart
+    
+    LDI R16, 100
+    RJMP uart_percentage_ok
+    
+normal_percentage_calculation_uart:
+    LDI R17, 100
+    MUL R16, R17
+    
+    MOV R16, R1
+    
+    MOV R17, R0
+    CPI R17, 128
+    BRLO uart_percentage_ok
+    INC R16
+    
+uart_percentage_ok:
+    CLR R21
+    
+    CLR R17
+    
+    CPI R16, 100
+    BRLO check_tens
+    SUBI R16, 100
+    LDI R17, 1
+    
+    MOV R19, R16
+    
+    MOV R16, R17
+    SUBI R16, -48
+    RCALL Send_Char
+    LDI R21, 1
+    
+    MOV R16, R19
+    RJMP tens_process
+    
+check_tens:
+    MOV R19, R16
+    
+tens_process:
+    CLR R17
+    
+tens_loop:
+    CPI R16, 10
+    BRLO tens_done
+    SUBI R16, 10
+    INC R17
+    RJMP tens_loop
+    
+tens_done:
+    PUSH R16
+    
+    CPI R17, 0
+    BRNE send_tens
+    CPI R21, 0
+    BREQ ones_process_restore
+    
+send_tens:
+    MOV R16, R17
+    SUBI R16, -48
+    RCALL Send_Char
+    LDI R21, 1
+    
+ones_process_restore:
+    POP R16
+    
+    SUBI R16, -48
+    RCALL Send_Char
+    
+    LDI R16, '%'
+    RCALL Send_Char
+    
+    POP R16
+    RET
+
+; Message untuk ditampilkan ke Terminal
+welcome_msg:
+    .ascii "Water Level Monitoring System - SPI Slave Ready\r\n"
+    .ascii "Waiting for data from master...\r\n"
+    .byte 0
+
+water_level_msg:
+    .ascii "Water level: "
+    .byte 0
+
+low_level_msg:
+    .ascii " - LOW LEVEL (Green LED)"
+    .byte 0
+
+medium_level_msg:
+    .ascii " - MEDIUM LEVEL (Yellow LED)"
+    .byte 0
+
+high_level_msg:
+    .ascii " - HIGH LEVEL WARNING! (Red LED)"
+    .byte 0
