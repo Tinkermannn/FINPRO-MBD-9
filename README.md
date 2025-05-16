@@ -33,7 +33,10 @@ Banjir merupakan salah satu bencana alam yang sering terjadi dan dapat menyebabk
 
 ---
 
-## Hardware Overview
+## Hardware Design and Implementation 
+
+### Hardware Schematic 
+![image](https://hackmd.io/_uploads/H1-vZFNbxe.png)
 
 ### Components Used
 
@@ -59,4 +62,4 @@ Pada bagian implementasi perangkat lunak (software implementation), sistem diban
 
 Di sisi lain, perangkat Slave menerima data dari Master melalui SPI dan menampilkannya melalui LED bar (PORTC) dengan representasi visual level air. Slave dikonfigurasi sebagai perangkat SPI Slave yang menerima data secara otomatis ketika SS (PB2) diaktifkan (LOW) oleh Master. Setelah data diterima, data 8-bit akan dibaca dari SPDR dan langsung ditampilkan pada PORTC, memungkinkan sistem menampilkan status level air secara langsung melalui bar LED. Selain itu, Slave juga menggunakan register SPIF untuk memastikan data sudah diterima sebelum diproses. Pendekatan ini memungkinkan sistem monitoring level air secara real-time dengan indikator visual dan alarm berbasis logika terintegrasi antara Master dan Slave menggunakan SPI.
 
-
+## Test Result and Performance Evaluation
