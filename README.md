@@ -166,3 +166,28 @@ Banjir merupakan salah satu bencana alam yang sering terjadi dan dapat menyebabk
     - Sistem memberikan peringatan lokal dan remote secara real-time
 
 ## Test Result and Performance Evaluation
+
+### Level ketinggian rendah 
+#### Rangkaian asli :
+![image](https://hackmd.io/_uploads/SkZgKsd-gg.png)
+
+#### Rangkaian proteus :
+![image](https://hackmd.io/_uploads/ryr3_jubxl.png)
+
+### Level ketinggian sedang 
+#### Rangkaian asli :
+![image](https://hackmd.io/_uploads/SkG3tiOblg.png)
+
+#### Rangkaian proteus :
+![image](https://hackmd.io/_uploads/SyhTYi_-gl.png)
+
+
+### Level ketinggian tinggi/maksimum
+#### Rangkaian asli :
+![image](https://hackmd.io/_uploads/HJGO9o_Wxg.png)
+
+#### Rangkaian proteus :
+![image](https://hackmd.io/_uploads/B1auqi_-ee.png)
+
+## Conclusion and Future Work 
+Proyek SmartFlow berhasil diimplementasikan dengan memanfaatkan dua mikrokontroler Arduino yang berperan sebagai Master dan Slave, di mana Master membaca level air melalui sensor dan mengatur LED serta buzzer, sementara Slave menampilkan data secara deskriptif melalui UART. Sistem ini mengintegrasikan komunikasi SPI, interrupt, dan timer untuk memungkinkan monitoring air secara otomatis dan real-time. Meskipun masih terdapat kendala pada konversi data persentase di Slave, keseluruhan fungsi utama sistem berjalan dengan baik. Ke depannya, pengembangan sensor yang lebih tahan dan presisi dapat memperluas aplikasi SmartFlow, terutama untuk daerah rawan bencana sebagai sistem peringatan dini yang andal.
