@@ -181,13 +181,16 @@ Banjir merupakan salah satu bencana alam yang sering terjadi dan dapat menyebabk
 #### Rangkaian proteus :
 ![image](https://hackmd.io/_uploads/SyhTYi_-gl.png)
 
-
 ### Level ketinggian tinggi/maksimum
 #### Rangkaian asli :
 ![image](https://hackmd.io/_uploads/HJGO9o_Wxg.png)
 
 #### Rangkaian proteus :
 ![image](https://hackmd.io/_uploads/B1auqi_-ee.png)
+
+### Result and Evaluation
+Hasil simulasi di Proteus menunjukkan bahwa sistem SmartFlow berfungsi dengan baik, dengan indikator LED menyala sesuai level air yang disimulasikan menggunakan potensiometer, dan tampilan persentase level air pada serial monitor juga sesuai. Pada pengujian rangkaian fisik, sistem berhasil menampilkan respons visual dan suara yang akurat berdasarkan kedalaman sensor di dalam air, namun nilai persentase pada serial monitor masih belum sepenuhnya mencerminkan kondisi sebenarnya.
+Berdasarkan hasil pengujian, ketidaksesuaian nilai persentase level air pada serial monitor disebabkan oleh proses konversi data di Arduino Slave, di mana nilai digital dari Master (maksimal 255) tidak sesuai dengan output analog sensor yang bisa mencapai sekitar 440. Kurangnya pemetaan yang tepat menyebabkan hasil konversi tidak akurat, sehingga nilai persentase yang ditampilkan belum sepenuhnya merefleksikan kondisi nyata, meskipun indikator LED pada Master telah berfungsi sesuai level air.
 
 ## Conclusion and Future Work 
 Proyek SmartFlow berhasil diimplementasikan dengan memanfaatkan dua mikrokontroler Arduino yang berperan sebagai Master dan Slave, di mana Master membaca level air melalui sensor dan mengatur LED serta buzzer, sementara Slave menampilkan data secara deskriptif melalui UART. Sistem ini mengintegrasikan komunikasi SPI, interrupt, dan timer untuk memungkinkan monitoring air secara otomatis dan real-time. Meskipun masih terdapat kendala pada konversi data persentase di Slave, keseluruhan fungsi utama sistem berjalan dengan baik. Ke depannya, pengembangan sensor yang lebih tahan dan presisi dapat memperluas aplikasi SmartFlow, terutama untuk daerah rawan bencana sebagai sistem peringatan dini yang andal.
