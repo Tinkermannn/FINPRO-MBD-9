@@ -189,7 +189,8 @@ Banjir merupakan salah satu bencana alam yang sering terjadi dan dapat menyebabk
 ![image](https://hackmd.io/_uploads/B1auqi_-ee.png)
 
 ### Result and Evaluation
-Hasil simulasi di Proteus menunjukkan bahwa sistem SmartFlow berfungsi dengan baik, dengan indikator LED menyala sesuai level air yang disimulasikan menggunakan potensiometer, dan tampilan persentase level air pada serial monitor juga sesuai. Pada pengujian rangkaian fisik, sistem berhasil menampilkan respons visual dan suara yang akurat berdasarkan kedalaman sensor di dalam air, namun nilai persentase pada serial monitor masih belum sepenuhnya mencerminkan kondisi sebenarnya.
+Hasil simulasi di Proteus menunjukkan bahwa sistem SmartFlow berfungsi dengan baik, dengan indikator LED menyala sesuai level air yang disimulasikan menggunakan potensiometer, dan tampilan persentase level air pada serial monitor juga sesuai. Pada pengujian rangkaian fisik, sistem berhasil menampilkan respons visual dan suara yang akurat berdasarkan kedalaman sensor di dalam air, namun nilai persentase pada serial monitor masih belum sepenuhnya mencerminkan kondisi sebenarnya.  
+
 Berdasarkan hasil pengujian, ketidaksesuaian nilai persentase level air pada serial monitor disebabkan oleh proses konversi data di Arduino Slave, di mana nilai digital dari Master (maksimal 255) tidak sesuai dengan output analog sensor yang bisa mencapai sekitar 440. Kurangnya pemetaan yang tepat menyebabkan hasil konversi tidak akurat, sehingga nilai persentase yang ditampilkan belum sepenuhnya merefleksikan kondisi nyata, meskipun indikator LED pada Master telah berfungsi sesuai level air.
 
 ## Conclusion and Future Work 
