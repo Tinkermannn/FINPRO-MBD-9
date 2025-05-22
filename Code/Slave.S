@@ -77,16 +77,16 @@ delay_short_loop:
 
 ; Konfigurasi UART
 UART_Init:
-    LDI R16, 103
-    STS UBRR0L, R16
-    CLR R16
+    LDI R16, 103        ; 103 = 16,000,000/(16*(Baud Rate))-1
+    STS UBRR0L, R16     ; Baud rate UART 9600
+    CLR R16             ; clear UBRR0H
     STS UBRR0H, R16
     
-    LDI R16, (1<<TXEN0)
-    STS UCSR0B, R16
+    LDI R16, (1<<TXEN0) ; mengaktifkan bit pengirim
+    STS UCSR0B, R16     ; TXEN0 di UCSR0B
     
-    LDI R16, (1<<UCSZ01) | (1<<UCSZ00)
-    STS UCSR0C, R16
+    LDI R16, (1<<UCSZ01) | (1<<UCSZ00)  ; UCSZ01, UCSZ00 --> binary 11
+    STS UCSR0C, R16     ; UCSZ02 --> 0, UCSZ = 011, jumlah bit data 8-bit
     
     RET
 
@@ -95,7 +95,7 @@ Send_Welcome_Message:
     LDI ZH, hi8(welcome_msg)
     
 send_msg_loop:
-    LPM R16, Z+
+    LPM R16, Z+         ; Load data dari memori dan inkremen Z
     CPI R16, 0
     BREQ send_msg_done
     
@@ -145,7 +145,7 @@ send_water_level:
 
 ; Menampilkan indikator water level
 Send_Status_Message:
-    CPI R19, 33
+    CPI R19, 33     
     BRSH check_medium
     
     LDI ZL, lo8(low_level_msg)
